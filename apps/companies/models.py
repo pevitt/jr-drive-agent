@@ -19,6 +19,12 @@ class Company(BaseModel):
         null=True,
         help_text="Número de teléfono identificador de la compañía"
     )
+    drive_folder_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="ID de la carpeta compartida en Google Drive"
+    )
     is_active = models.BooleanField(
         default=True,
         help_text="Indica si la compañía está activa"

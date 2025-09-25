@@ -17,13 +17,13 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('🔍 Probando conexión con Google Drive...'))
         
         try:
-            # Verificar que existan las credenciales
-            credentials_path = 'credentials/credentials.json'
-            if not os.path.exists(credentials_path):
+            # Verificar que existan las credenciales del Service Account
+            service_account_path = 'credentials/service_account.json'
+            if not os.path.exists(service_account_path):
                 self.stdout.write(
                     self.style.ERROR(
-                        f'❌ Archivo de credenciales no encontrado: {credentials_path}\n'
-                        'Por favor, copia tu archivo credentials.json a la carpeta credentials/'
+                        f'❌ Archivo de Service Account no encontrado: {service_account_path}\n'
+                        'Por favor, configura el Service Account siguiendo la documentación del README'
                     )
                 )
                 return
@@ -32,22 +32,36 @@ class Command(BaseCommand):
             drive_service = DriveService()
             self.stdout.write(self.style.SUCCESS('✅ Conexión con Google Drive establecida'))
             
+            # Obtener una compañía de prueba
+            from apps.companies.models import Company
+            company = Company.objects.filter(drive_folder_id__isnull=False).first()
+            
+            if not company:
+                self.stdout.write(
+                    self.style.ERROR(
+                        '❌ No se encontró ninguna compañía con carpeta de Drive configurada\n'
+                        'Ejecuta: python manage.py load_companies'
+                    )
+                )
+                return
+            
             # Crear estructura de prueba
             self.stdout.write(self.style.MIGRATE_HEADING('📁 Creando estructura de prueba...'))
             
-            folder_id = drive_service.drive_client.create_folder_structure(
-                company_name='Test Company',
+            folder_id = drive_service.drive_client.create_folder_structure_in_company_folder(
+                company_folder_id=company.drive_folder_id,
                 sender_number='+1234567890',
                 year='2025',
                 month='09',
-                day='14'
+                day='23'
             )
             
             self.stdout.write(
                 self.style.SUCCESS(
                     f'✅ Estructura de carpetas creada exitosamente\n'
+                    f'   Compañía: {company.name}\n'
                     f'   ID de carpeta: {folder_id}\n'
-                    f'   Ruta: /Drive Agent/Test Company/+1234567890/2025/09/14'
+                    f'   Ruta: /{company.name}/+1234567890/2025/09/23'
                 )
             )
             

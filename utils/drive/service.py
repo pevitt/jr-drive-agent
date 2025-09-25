@@ -5,7 +5,7 @@ from django.conf import settings
 from apps.users.models import User
 from apps.companies.models import Company
 from apps.users.services import UserService
-from utils.drive.client import GoogleDriveClient
+from utils.drive.service_account_client import GoogleDriveServiceAccountClient
 import logging
 
 logger = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ class DriveService:
     """
     
     def __init__(self):
-        self.drive_client = GoogleDriveClient()
+        self.drive_client = GoogleDriveServiceAccountClient()
         self.user_service = UserService()
     
     def upload_file_from_message(self, file_content: bytes, filename: str, sender_number: str, 
@@ -66,7 +66,7 @@ class DriveService:
             )
             
             # Generar ruta de la carpeta para almacenar en BD
-            folder_path = f"/Drive Agent/{company.name}/{sender_number}/{now.year}/{now.month:02d}/{now.day:02d}"
+            folder_path = f"/{company.name}/{sender_number}/{now.year}/{now.month:02d}/{now.day:02d}"
             
             logger.info(f"Archivo subido exitosamente: {unique_filename} para {company.name}")
             

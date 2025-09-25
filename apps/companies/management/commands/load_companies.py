@@ -17,16 +17,19 @@ class Command(BaseCommand):
             {
                 'name': 'Rigoberto',
                 'phone_number': '+5712312312',
+                'drive_folder_id': '1XqhwTc_anck6Rt_J9N6AZ2HaXWoEGLKe',  # Tu carpeta de Drive
                 'is_active': True,
             },
             {
                 'name': 'Empresa Demo',
                 'phone_number': '+1987654321',
+                'drive_folder_id': '',  # Agregar ID cuando crees la carpeta
                 'is_active': True,
             },
             {
                 'name': 'Cliente Test',
                 'phone_number': '+1555000000',
+                'drive_folder_id': '',  # Agregar ID cuando crees la carpeta
                 'is_active': True,
             },
         ]
@@ -39,6 +42,7 @@ class Command(BaseCommand):
                 name=company_data['name'],
                 defaults={
                     'phone_number': company_data['phone_number'],
+                    'drive_folder_id': company_data['drive_folder_id'],
                     'is_active': company_data['is_active'],
                 }
             )
